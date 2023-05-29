@@ -1,0 +1,60 @@
+#!/bin/bash
+
+if [ -z `ls /opt/google/chrome/chrome` ]; then
+    FILE=google-chrome-stable_current_amd64.deb
+    wget https://dl.google.com/linux/direct/$FILE
+    dpkg -i $FILE
+fi
+if [ -z `ls /opt/google/chrome/chrome` ]; then
+    FILE=code_1.78.2-1683731010_amd64.deb
+    wget https://az764295.vo.msecnd.net/stable/b3e4e68a0bc097f0ae7907b217c1119af9e03435/$FILE
+    dpkg -i $FILE
+fi
+if [ ! -d ~/oss-cad-suite ]; then
+    FILE=oss-cad-suite-linux-x64-20230529.tgz
+    wget https://objects.githubusercontent.com/github-production-release-asset-2e65be/334882062/46a5b6f0-43ef-43b9-8b7d-fbb1cbe004de?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230529%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230529T105127Z&X-Amz-Expires=300&X-Amz-Signature=b9f75f93f3d06ee8735daea3a9c8ed1b4d8fc2eb65726369ad9f84889824338b&X-Amz-SignedHeaders=host&actor_id=1237930&key_id=0&repo_id=334882062&response-content-disposition=attachment%3B%20filename%3D$FILE
+    dpkg -i $FILE
+fi
+sudo apt-get update
+sudo apt-get install make build-essential libssl-dev zlib1g-dev \
+libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev \
+libffi-dev liblzma-dev git cmake libboost-all-dev libeigen3-dev \
+libftdi1-2 libftdi1-dev libhidapi-hidraw0 libhidapi-dev \
+libudev-dev zlib1g-dev pkg-config g++ clang bison flex \
+gawk tcl-dev graphviz xdot pkg-config zlib1g-dev git yosys -y
+
+if [ -z `which pyenv` ]; then
+    curl https://pyenv.run | bash
+    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+    echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+    echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n eval "$(pyenv init -)"\nfi' >> ~/.bashrc
+    pyenv install 3.9.13
+    pyenv global 3.9.13
+fi
+python -m pip install --upgrade pip
+pip install apycula
+if [ ! -d ~/nextpnr ]; then
+    cd ~
+    git clone https://github.com/YosysHQ/nextpnr.git
+fi
+
+if [ -z `which nextpnr-gowin` ]; then
+    cd ~/nextpnr
+    cmake . -DARCH=gowin -DGOWIN_BBA_EXECUTABLE=`which gowin_bba`
+    make
+    sudo make install
+fi
+
+if [ -z `which openFPGALoader` ]; then
+    cd ~
+    if [ -z `ls openFPGALoader` ]; then
+        git clone https://github.com/trabucayre/openFPGALoader.git
+        cd openFPGALoader
+        mkdir -p build
+        cd build
+        cmake ../ 
+        cmake --build .
+        sudo make install
+    fi
+fi
