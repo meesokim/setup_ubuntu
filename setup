@@ -65,3 +65,7 @@ EXAMPLES=~/tangnano9k-examples
 if [ ! -d $EXAMPLES ]; then
     git clone https://github.com/lushaylabs/tangnano9k-series-examples $EXAMPLES
 fi
+
+code --install-extension lushay-labs.lushay-code
+code --install-extension mshr-h.VerilogHDL
+code --install-extension wavetrace.wavetrace
