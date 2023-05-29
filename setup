@@ -12,8 +12,8 @@ if [ -z `ls /opt/google/chrome/chrome` ]; then
 fi
 if [ ! -d ~/oss-cad-suite ]; then
     FILE=oss-cad-suite-linux-x64-20230529.tgz
-    wget https://objects.githubusercontent.com/github-production-release-asset-2e65be/334882062/46a5b6f0-43ef-43b9-8b7d-fbb1cbe004de?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230529%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230529T105127Z&X-Amz-Expires=300&X-Amz-Signature=b9f75f93f3d06ee8735daea3a9c8ed1b4d8fc2eb65726369ad9f84889824338b&X-Amz-SignedHeaders=host&actor_id=1237930&key_id=0&repo_id=334882062&response-content-disposition=attachment%3B%20filename%3D$FILE
-    dpkg -i $FILE
+    wget -c https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2023-05-29/$FILE
+    tar fxvz $FILE -C ~
 fi
 sudo apt-get update
 sudo apt-get install make build-essential libssl-dev zlib1g-dev \
